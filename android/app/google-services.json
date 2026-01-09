@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "53386799480",
+    "project_id": "barista-ai-6e251",
+    "storage_bucket": "barista-ai-6e251.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:53386799480:android:9059ea8f6e4fd26dcc408d",
+        "android_client_info": {
+          "package_name": "ai.barista.app.barista_ai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2MIbOPsWHj4yzbMG5Tw6erdg67Skh-AU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
