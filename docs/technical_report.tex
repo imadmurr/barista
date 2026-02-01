@@ -1,0 +1,141 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{setspace}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+% --------------------
+% Title Page (leave for university info/logo)
+% --------------------
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+
+    % University logo placeholder
+    \fbox{\rule{0pt}{4cm} \rule{8cm}{0pt}}\\[1.2cm]
+    {\Large \textbf{University Name}}\\[0.3cm]
+    {\large Faculty / Department}\\[2.0cm]
+
+    {\Huge \textbf{Barista AI}}\\[0.4cm]
+    {\Large Technical Report}\\[1.4cm]
+
+    \begin{tabular}{>{\bfseries}l l}
+        Course: & Mobile Programming with Flutter \\
+        Instructor: & Dr. Mohamad Aoude \\
+        Students: & Clovis Abou Kheir, Imad El Murr \\
+        Date: & \today \\
+    \end{tabular}
+
+    \vfill
+    {\large \textit{(Title page reserved for official university branding)}}
+\end{titlepage}
+
+\newpage
+
+\tableofcontents
+\newpage
+
+\onehalfspacing
+
+\section{Abstract}
+Barista AI is a Flutter-based mobile application that enables users to discover and explore cocktail recipes through a modern, animated interface. The app integrates Firebase Authentication and Cloud Firestore to provide secure per-user favorites, real-time updates, and scalable data storage. This report documents the system architecture, data model, state management approach, user experience design, and the main technical trade-offs of the current prototype. It also outlines future enhancements such as true AI-driven recipe generation and personalization.
+
+\section{Introduction}
+Cocktail discovery apps commonly provide static lists and unremarkable UI experiences. The Barista AI project explores a more immersive approach by combining a curated recipe dataset with dynamic visuals, animations, and an AI-inspired creation flow. The project was implemented as a university assignment for the ``Mobile Programming with Flutter'' course and aims to demonstrate:
+
+\begin{itemize}[leftmargin=1.2em]
+    \item A complete Flutter application structure with modular layers.
+    \item Real-time data synchronization using Firebase Cloud Firestore.
+    \item Authentication flows and access control in navigation.
+    \item A polished UI with reusable components and animated transitions.
+\end{itemize}
+
+\section{System Overview}
+The application follows a clean layered architecture:
+
+\begin{itemize}[leftmargin=1.2em]
+    \item \textbf{Presentation Layer}: Screens, widgets, and visual components written in Flutter.
+    \item \textbf{State Layer}: Controllers using Provider + ChangeNotifier to expose reactive state to the UI.
+    \item \textbf{Data Layer}: Repositories that abstract Firebase Auth and Firestore operations.
+    \item \textbf{Model Layer}: Immutable data objects such as \texttt{Cocktail} and \texttt{Ingredient}.
+\end{itemize}
+
+A high-level flow of control is:
+\begin{enumerate}[leftmargin=1.2em]
+    \item The user authenticates (or is redirected to sign-in).
+    \item The Discover and Search screens subscribe to Firestore streams.
+    \item State controllers publish updates to the UI.
+    \item The user can favorite items, which are stored under their user document.
+\end{enumerate}
+
+\section{Architecture and Routing}
+Navigation is handled by \textbf{GoRouter} with guards that enforce authentication. The router starts at a splash screen and transitions into the app shell after the authentication state is initialized. The shell provides bottom-tab navigation between Discover, Search, Favorites, Creator Studio, and Profile screens. This design ensures that the UX remains consistent while individual screens manage their own state.
+
+\subsection{State Management}
+Provider is used to inject repositories and controllers into the widget tree. The \texttt{AuthController} observes Firebase authentication changes, while the \texttt{FavoritesController} listens to user-specific Firestore subcollections. This approach simplifies dependency injection, keeps UI widgets stateless where possible, and ensures that the UI remains reactive to backend updates.
+
+\section{Data Model and Firestore Design}
+The data model centers around cocktails and per-user favorites.
+
+\subsection{Cocktail Documents}
+Each cocktail document contains metadata (name, subtitle, tags), rendering data (color gradients for UI cards and layers), and recipe content (ingredients and steps). These fields are intentionally structured to support both list views and detail views without additional client-side transformations.
+
+\subsection{Favorites Subcollection}
+Favorites are stored under \texttt{users/\{uid\}/favorites} as documents keyed by cocktail ID. This design provides:
+
+\begin{itemize}[leftmargin=1.2em]
+    \item Per-user isolation of favorite records.
+    \item Simple toggle logic (create vs. delete document).
+    \item Real-time synchronization between devices.
+\end{itemize}
+
+\section{User Experience and UI Design}
+Barista AI emphasizes a vibrant, premium aesthetic. Key UI features include:
+
+\begin{itemize}[leftmargin=1.2em]
+    \item Gradient cards and animated hero transitions.
+    \item A cocktail detail screen with a recipe tab and an animated ``pour'' visualization.
+    \item A creator studio with interactive controls (chips, sliders, switches) for mock generation.
+\end{itemize}
+
+Animations and visual layers are implemented with custom painters and Flutter rendering primitives to simulate liquid layering inside a cocktail glass. This provides a visually engaging element without requiring external animation assets.
+
+\section{Creator Studio and AI Concept}
+The Creator Studio is a mock interface intended to simulate a future AI generation workflow. Users select flavor profiles, sweetness levels, and drink attributes, and the UI provides a visual preview of the resulting cocktail. The ``Generate'' action currently produces a mock name and preview only. This is intentionally scoped as a prototype feature to demonstrate UX flow prior to connecting to a real generative model.
+
+\section{Security and Authentication}
+Firebase Authentication enforces email/password sign-in before accessing application content. Navigation guards prevent unauthenticated access to protected routes. Firestore access relies on user authentication; security rules should be configured accordingly in production. For development, the database can be run in test mode with limited security.
+
+\section{Testing and Debug Utilities}
+The project includes a Firestore seeder utility that can populate cocktail documents with mock data in debug builds. This improves development velocity and ensures consistent test data. Flutter\'s built-in testing framework is available for widget and unit testing, although this prototype primarily focuses on integration behavior and UI flow.
+
+\section{Limitations}
+\begin{itemize}[leftmargin=1.2em]
+    \item The AI generation is currently a mocked experience without an external model.
+    \item There is no offline caching or persistence for network interruption.
+    \item Cocktail data relies on Firestore indexing and requires correct setup.
+\end{itemize}
+
+\section{Future Work}
+Potential improvements include:
+
+\begin{itemize}[leftmargin=1.2em]
+    \item Integrating real AI generation (OpenAI, Vertex AI, or custom model APIs).
+    \item User personalization and recommendation logic.
+    \item Admin tooling for cocktail management.
+    \item Offline-first caching with local persistence.
+\end{itemize}
+
+\section{Conclusion}
+Barista AI demonstrates a complete, modern Flutter application that combines authentication, real-time data access, and high-quality UI design. The project architecture provides clear separation of concerns, while Firebase services simplify backend infrastructure. As a university project, it achieves its goals of illustrating best practices in Flutter development and provides a strong foundation for future expansion.
+
+\end{document}
