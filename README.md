@@ -1,7 +1,7 @@
 # 🍸 Barista AI
 
 A Flutter mobile application for discovering, searching, favoriting, and previewing cocktail recipes with a polished, animated UI and Firebase-backed data storage.
-
+Demo and report here: https://drive.google.com/drive/folders/1totkQoniIX4kvn_q5nIx9l6UtcX2qqIN?usp=sharing
 ---
 
 ## 📌 Project Overview
